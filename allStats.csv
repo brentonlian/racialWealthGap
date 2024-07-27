@@ -1,0 +1,53 @@
+State,White,Black,Hispanic,Asian,American Indian,Native Haiwaiian,Multiple,Income,Minority,Location,Wealth
+Alabama,65.40%,26.50%,4.40%,1.40%,0.40%,N/A,1.90%,"56,200",Black,South,Low
+Alaska,60.00%,2.20%,7.00%,6.00%,15.10%,1.50%,8.30%,"78,394",American Indian,Other,High
+Arizona,54.20%,4.30%,31.80%,3.30%,3.90%,0.20%,2.40%,"70,674",Hispanic,Southwest,High
+Arkansas,72.10%,15.20%,7.80%,1.60%,0.60%,0.40%,2.40%,"54,539",Black,South,Low
+California,36.40%,5.30%,39.50%,14.70%,0.40%,0.40%,3.30%,"78,105",Hispanic,West,High
+Colorado,67.80%,3.80%,21.80%,3.20%,0.50%,0.10%,2.80%,"72,499",Hispanic,West,High
+Connecticut,65.70%,10.00%,16.90%,4.60%,0.20%,N/A,2.60%,"87,291",Hispanic,North,High
+Delaware,61.40%,21.80%,9.70%,3.90%,0.30%,N/A,2.80%,"74,194",Black,North,High
+District of Columbia,36.70%,45.00%,11.20%,3.70%,0.30%,N/A,3.10%,"93,111",Black,North,High
+Florida,53.00%,15.00%,26.60%,2.70%,0.20%,0.10%,2.40%,"58,368",Hispanic,South,Low
+Georgia,52.00%,31.30%,9.80%,4.10%,0.20%,0.10%,2.50%,"56,628",Black,South,Low
+Hawaii,20.40%,1.20%,10.30%,39.40%,0.10%,10.20%,18.40%,"88,006",Asian,Other,High
+Idaho,81.60%,0.70%,12.90%,1.20%,0.90%,N/A,2.60%,"65,988",Hispanic,West,Mid
+Illinois,60.90%,13.60%,17.60%,5.60%,0.10%,<.01,2.20%,"74,399",Hispanic,Midwest,High
+Indiana,78.60%,9.20%,7.20%,2.40%,0.20%,N/A,2.30%,"66,693",Black,Midwest,Mid
+Iowa,85.30%,3.90%,6.30%,2.30%,0.30%,<.01,1.90%,"66,054",Hispanic,Midwest,Mid
+Kansas,75.70%,5.50%,12.20%,2.80%,0.60%,N/A,3.20%,"73,151",Hispanic,Midwest,High
+Kentucky,84.50%,8.00%,3.70%,1.60%,0.10%,N/A,2.00%,"55,662",Black,South,Low
+Louisiana,58.80%,31.90%,5.20%,1.70%,0.50%,N/A,1.90%,"51,707",Black,South,Low
+Maine,93.20%,1.40%,1.70%,1.10%,0.70%,N/A,1.90%,"66,546",Multiple,North,Mid
+Maryland,49.90%,29.60%,10.60%,6.40%,0.20%,N/A,3.20%,"95,572",Black,North,High
+Massachusetts,70.50%,7.00%,12.40%,6.70%,0.20%,<.01,3.20%,"87,707",Hispanic,North,High
+Michigan,74.90%,13.40%,5.30%,3.20%,0.50%,N/A,2.70%,"64,119",Black,Midwest,Mid
+Minnesota,79.10%,6.40%,5.60%,4.90%,0.90%,N/A,3.00%,"81,426",Black,Midwest,High
+Mississippi,56.60%,37.60%,3.00%,1.00%,0.40%,N/A,1.40%,"44,787",Black,South,Low
+Missouri,79.40%,11.20%,4.30%,2.10%,0.40%,0.10%,2.60%,"60,597",Black,South,Mid
+Montana,86.10%,0.60%,3.70%,0.80%,6.10%,N/A,2.80%,"60,195",Hispanic,West,Mid
+Nebraska,78.50%,4.80%,11.30%,2.40%,0.80%,N/A,2.10%,"73,071",Hispanic,Midwest,HIgh
+Nevada,47.80%,9.20%,29.30%,8.50%,0.90%,0.60%,3.70%,"70,906",Hispanic,West,High
+New Hampshire,89.80%,1.30%,3.90%,2.60%,N/A,N/A,2.10%,"86,900",Hispanic,North,High
+New Jersey,54.50%,12.40%,21.00%,9.60%,0.10%,N/A,2.40%,"87,726",Hispanic,North,High
+New Mexico,36.70%,1.70%,49.50%,1.60%,8.70%,N/A,1.80%,"53,113",Hispanic,Midwest,Low
+New York,55.20%,14.00%,19.30%,8.60%,0.20%,N/A,2.70%,"71,855",Hispanic,North,High
+North Carolina,62.70%,20.90%,9.70%,2.90%,1.10%,<.01,2.60%,"61,159",Black,South,Mid
+North Dakota,84.10%,2.40%,4.00%,1.40%,5.20%,N/A,2.60%,"70,031",American Indian,Midwest,High
+Ohio,78.60%,12.20%,4.00%,2.30%,0.10%,N/A,2.80%,"64,663",Black,Midwest,Mid
+Oklahoma,65.00%,6.90%,11.10%,2.10%,7.70%,0.10%,7.10%,"59,397",Hispanic,Southwest,Low
+Oregon,75.00%,1.80%,13.40%,4.70%,0.90%,0.30%,4.00%,"74,413",Hispanic,West,High
+Pennsylvania,76.00%,10.40%,7.80%,3.50%,0.10%,<.01,2.30%,"70,582",Black,North,High
+Puerto Rico,65.90%,11.70%,98.70%,0.20%,0.20%,N/A,5.30%,"20,296",Hispanic,Other,Low
+Rhode Island,70.50%,5.90%,16.60%,3.30%,0.20%,N/A,3.30%,"70,151",Hispanic,North,High
+South Carolina,63.70%,26.20%,5.70%,1.70%,0.30%,N/A,2.20%,"62,028",Black,South,Mid
+South Dakota,81.90%,2.20%,3.70%,1.30%,8.40%,N/A,2.40%,"64,255",American Indian,Midwest,Mid
+Tennessee,73.60%,16.40%,5.70%,1.80%,0.30%,N/A,2.20%,"56,627",Black,South,Low
+Texas,41.10%,11.70%,40.00%,5.00%,0.30%,0.10%,1.90%,"67,444",Hispanic,Southwest,Mid
+Utah,77.80%,1.00%,14.40%,2.30%,1.00%,0.80%,2.70%,"84,523",Hispanic,West,High
+Vermont,92.80%,1.10%,1.80%,1.60%,0.70%,N/A,2.00%,"74,305",Hispanic,North,High
+Virginia,61.30%,18.90%,9.60%,6.70%,0.20%,<.01,3.30%,"81,313",Black,South,High
+Washington,67.50%,3.80%,13.00%,8.90%,1.10%,0.60%,5.00%,"82,454",Hispanic,West,High
+West Virginia,92.50%,3.20%,1.40%,0.80%,0.20%,N/A,1.80%,"53,706",Black,South,Low
+Wisconsin,81.10%,6.20%,7.10%,3.00%,0.70%,N/A,2.00%,"67,355",Hispanic,Midwest,Mid
+Wyoming,83.80%,1.00%,10.10%,0.60%,2.20%,N/A,2.10%,"65,134",Hispanic,West,Mid
