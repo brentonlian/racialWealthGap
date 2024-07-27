@@ -4,6 +4,8 @@ import folium
 import branca.colormap as cm
 import webbrowser
 import os
+import tkinter as tk
+from tkinter import ttk
 
 # Load the CSV files
 d = pd.read_csv('allStats.csv', on_bad_lines='skip')
@@ -159,12 +161,35 @@ def buildmap(race):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-
+    
     # Save the map to an HTML file and open it in a web browser
     map_file = 'income_map.html'
     m.save(map_file)
     webbrowser.open('file://' + os.path.realpath(map_file))
 
-# Get user input for race and build the map
-race = input('Enter none, black, hispanic, asian, american_indian, or multiple: ')
-buildmap(race)
+# Function to be called when the button is clicked
+def on_button_click():
+    selected_race = race_var.get()
+    buildmap(selected_race)
+
+# Create the main window
+root = tk.Tk()
+root.title("Income Map Generator")
+
+# Create a label
+label = tk.Label(root, text="Select race:")
+label.pack(pady=10)
+
+# Create a dropdown menu
+race_var = tk.StringVar()
+race_options = ["none", "black", "hispanic", "asian", "american_indian", "multiple"]
+race_menu = ttk.Combobox(root, textvariable=race_var, values=race_options)
+race_menu.current(0)
+race_menu.pack(pady=10)
+
+# Create a button to generate the map
+button = tk.Button(root, text="Generate Map", command=on_button_click)
+button.pack(pady=20)
+
+# Run the application
+root.mainloop()
