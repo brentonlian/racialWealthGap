@@ -2,6 +2,8 @@ import pandas as pd
 import geopandas as gpd
 import folium
 import branca.colormap as cm
+import webbrowser
+import os
 
 # Load the CSV files
 d = pd.read_csv('allStats.csv', on_bad_lines='skip')
@@ -42,9 +44,7 @@ def buildmap(race):
         folium.GeoJson(df, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple'])
                        ).add_to(fg)
         fg.add_to(m)
-        return m
-
-    if race == 'black':
+    elif race == 'black':
         black_projected = black.to_crs(epsg=3857)
         centroid = black_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
@@ -67,9 +67,7 @@ def buildmap(race):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-        return m
-
-    if race == 'hispanic':
+    elif race == 'hispanic':
         hispanic_projected = hispanic.to_crs(epsg=3857)
         centroid = hispanic_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
@@ -92,9 +90,7 @@ def buildmap(race):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-        return m
-
-    if race == 'asian':
+    elif race == 'asian':
         asian_projected = asian.to_crs(epsg=3857)
         centroid = asian_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
@@ -117,9 +113,7 @@ def buildmap(race):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-        return m
-
-    if race == 'american_indian':
+    elif race == 'american_indian':
         american_indian_projected = american_indian.to_crs(epsg=3857)
         centroid = american_indian_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
@@ -142,9 +136,7 @@ def buildmap(race):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-        return m
-
-    if race == 'multiple':
+    elif race == 'multiple':
         multiple_projected = multiple.to_crs(epsg=3857)
         centroid = multiple_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
@@ -167,7 +159,11 @@ def buildmap(race):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-        return m
+
+    # Save the map to an HTML file and open it in a web browser
+    map_file = 'income_map.html'
+    m.save(map_file)
+    webbrowser.open('file://' + os.path.realpath(map_file))
 
 # Get user input for race and build the map
 race = input('Enter none, black, hispanic, asian, american_indian, or multiple: ')
