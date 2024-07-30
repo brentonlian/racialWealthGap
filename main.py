@@ -8,33 +8,32 @@ import tkinter as tk
 from tkinter import ttk
 
 # Load the CSV files
-d = pd.read_csv('allData.csv', on_bad_lines='skip', delimiter=',', quotechar='"', skipinitialspace=True)
+d = pd.read_csv('allStats.csv', on_bad_lines='skip', delimiter=',', quotechar='"', skipinitialspace=True)
 d = d.replace("%", "", regex=True).replace(",", "", regex=True).fillna("0")
-blac = pd.read_csv('blackData.csv', delimiter=',', quotechar='"', skipinitialspace=True)
-hispani = pd.read_csv('hispanicData.csv', delimiter=',', quotechar='"', skipinitialspace=True)
-asia = pd.read_csv('asianData.csv', delimiter=',', quotechar='"', skipinitialspace=True)
-american_india = pd.read_csv('nativeData.csv', delimiter=',', quotechar='"', skipinitialspace=True)
+race = pd.read_csv('ageData.csv', delimiter=',', quotechar='"', skipinitialspace=True)
+gender = pd.read_csv('genderData.csv', delimiter=',', quotechar='"', skipinitialspace=True)
+age = pd.read_csv('raceData.csv', delimiter=',', quotechar='"', skipinitialspace=True)
 
 # Load the GeoJSON file
 state = gpd.read_file("states.json")
 
 # Merge the dataframes
 df = state.merge(d, left_on='NAME', right_on='State')
-black = state.merge(blac, left_on='NAME', right_on='State')
-hispanic = state.merge(hispani, left_on='NAME', right_on='State')
-asian = state.merge(asia, left_on='NAME', right_on='State')
-american_indian = state.merge(american_india, left_on='NAME', right_on='State')
+race = state.merge(race, left_on='NAME', right_on='State')
+gender = state.merge(gender, left_on='NAME', right_on='State')
+age = state.merge(age, left_on='NAME', right_on='State')
+
 
 # Convert the 'Income' column to int
 df = df.astype({"Income": int})
-black = black.astype({"Income": int})
-hispanic = hispanic.astype({"Income": int})
-asian = asian.astype({"Income": int})
-american_indian = american_indian.astype({"Income": int})
+race = race.astype({"Income": int})
+gender = gender.astype({"Income": int})
+age = age.astype({"Income": int})
+
 
 # Function to build the map
-def buildmap(race):
-    if race == "none":
+def buildmap(cat):
+    if cat == "none":
         df_projected = df.to_crs(epsg=3857)
         centroid = df_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
@@ -43,9 +42,9 @@ def buildmap(race):
         folium.GeoJson(df, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple'])
                        ).add_to(fg)
         fg.add_to(m)
-    elif race == 'black':
-        black_projected = black.to_crs(epsg=3857)
-        centroid = black_projected.geometry.centroid.to_crs(epsg=4326)
+    elif cat == 'race':
+        race_projected = race.to_crs(epsg=3857)
+        centroid = race_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
         fg = folium.FeatureGroup(name="Income", show=True)
@@ -66,9 +65,9 @@ def buildmap(race):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-    elif race == 'hispanic':
-        hispanic_projected = hispanic.to_crs(epsg=3857)
-        centroid = hispanic_projected.geometry.centroid.to_crs(epsg=4326)
+    elif cat == 'gender':
+        gender_projected = hispanic.to_crs(epsg=3857)
+        centroid = gender_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
         fg = folium.FeatureGroup(name="Income", show=True)
@@ -89,9 +88,9 @@ def buildmap(race):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-    elif race == 'asian':
-        asian_projected = asian.to_crs(epsg=3857)
-        centroid = asian_projected.geometry.centroid.to_crs(epsg=4326)
+    elif cat == 'age':
+        asian_projected = age.to_crs(epsg=3857)
+        centroid = age_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
         fg = folium.FeatureGroup(name="Income", show=True)
@@ -112,35 +111,15 @@ def buildmap(race):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-    elif race == 'american_indian':
-        american_indian_projected = american_indian.to_crs(epsg=3857)
-        centroid = american_indian_projected.geometry.centroid.to_crs(epsg=4326)
-        m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
-        folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
-        fg = folium.FeatureGroup(name="Income", show=True)
-        high = int(df['Income'].max())
-        low = int(df['Income'].min())
-        colormap = cm.LinearColormap(colors=['white', 'red'], index=[low, high], vmin=low, vmax=high)
-        style_function = lambda x: {
-            'fillColor': colormap(x['properties']["Income"]),
-            'color': 'black',
-            'weight': 1,
-            'fillOpacity': 0.45,
-            'opacity': 0.4,
-            'nan_fill_color': 'purple'
-        }
-        folium.GeoJson(american_indian, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
-                       ).add_to(fg)
-        fg.add_to(m)
-        colormap.caption = "Income"
-        colormap.add_to(m)
-        folium.LayerControl(collapsed=False).add_to(m)
-    
+
     # Save the map to an HTML file and open it in a web browser
     map_file = 'income_map.html'
     m.save(map_file)
     webbrowser.open('file://' + os.path.realpath(map_file))
 
+
+# BUild blank map
+buildmap("none")
 # Function to be called when the button is clicked
 def on_button_click():
     selected_race = race_var.get()
