@@ -63,7 +63,7 @@ white = white.astype({"Income": int})
 
 # Function to build the map
 def buildmap(cat):
-    if cat == "none":
+    if cat == 'none':
         df_projected = df.to_crs(epsg=3857)
         centroid = df_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
@@ -72,9 +72,9 @@ def buildmap(cat):
         folium.GeoJson(df, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple'])
                        ).add_to(fg)
         fg.add_to(m)
-    elif cat == 'race':
-        race_projected = race.to_crs(epsg=3857)
-        centroid = race_projected.geometry.centroid.to_crs(epsg=4326)
+    elif cat == 'fifteen':
+        fifteen_projected = fifteen.to_crs(epsg=3857)
+        centroid = fifteen_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
         fg = folium.FeatureGroup(name="Income", show=True)
@@ -89,15 +89,15 @@ def buildmap(cat):
             'opacity': 0.4,
             'nan_fill_color': 'purple'
         }
-        folium.GeoJson(black, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
+        folium.GeoJson(fifteen, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
                        ).add_to(fg)
         fg.add_to(m)
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-    elif cat == 'gender':
-        gender_projected = hispanic.to_crs(epsg=3857)
-        centroid = gender_projected.geometry.centroid.to_crs(epsg=4326)
+    elif cat == 'twentyfive':
+        twentyfive_projected = race.to_crs(epsg=3857)
+        centroid = twentyfive_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
         fg = folium.FeatureGroup(name="Income", show=True)
@@ -112,15 +112,61 @@ def buildmap(cat):
             'opacity': 0.4,
             'nan_fill_color': 'purple'
         }
-        folium.GeoJson(hispanic, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
+        folium.GeoJson(twentyfive, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
                        ).add_to(fg)
         fg.add_to(m)
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-    elif cat == 'age':
-        asian_projected = age.to_crs(epsg=3857)
-        centroid = age_projected.geometry.centroid.to_crs(epsg=4326)
+    elif cat == 'fourtyfive':
+        fourtyfive_projected = fourtyfive.to_crs(epsg=3857)
+        centroid = fourtyfive_projected.geometry.centroid.to_crs(epsg=4326)
+        m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
+        folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
+        fg = folium.FeatureGroup(name="Income", show=True)
+        high = int(df['Income'].max())
+        low = int(df['Income'].min())
+        colormap = cm.LinearColormap(colors=['white', 'red'], index=[low, high], vmin=low, vmax=high)
+        style_function = lambda x: {
+            'fillColor': colormap(x['properties']["Income"]),
+            'color': 'black',
+            'weight': 1,
+            'fillOpacity': 0.45,
+            'opacity': 0.4,
+            'nan_fill_color': 'purple'
+        }
+        folium.GeoJson(fourtyfive, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
+                       ).add_to(fg)
+        fg.add_to(m)
+        colormap.caption = "Income"
+        colormap.add_to(m)
+        folium.LayerControl(collapsed=False).add_to(m)
+    elif cat == 'sixtyfive':
+        sixtyfive_projected = sixtyfive.to_crs(epsg=3857)
+        centroid = sixtyfive_projected.geometry.centroid.to_crs(epsg=4326)
+        m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
+        folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
+        fg = folium.FeatureGroup(name="Income", show=True)
+        high = int(df['Income'].max())
+        low = int(df['Income'].min())
+        colormap = cm.LinearColormap(colors=['white', 'red'], index=[low, high], vmin=low, vmax=high)
+        style_function = lambda x: {
+            'fillColor': colormap(x['properties']["Income"]),
+            'color': 'black',
+            'weight': 1,
+            'fillOpacity': 0.45,
+            'opacity': 0.4,
+            'nan_fill_color': 'purple'
+        }
+        folium.GeoJson(sixtyfive, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
+                       ).add_to(fg)
+        fg.add_to(m)
+        colormap.caption = "Income"
+        colormap.add_to(m)
+        folium.LayerControl(collapsed=False).add_to(m)
+    elif cat == 'asian':
+        asian_projected = asian.to_crs(epsg=3857)
+        centroid = asian_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
         fg = folium.FeatureGroup(name="Income", show=True)
@@ -141,18 +187,9 @@ def buildmap(cat):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-    elif cat == "none":
-        df_projected = df.to_crs(epsg=3857)
-        centroid = df_projected.geometry.centroid.to_crs(epsg=4326)
-        m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
-        folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
-        fg = folium.FeatureGroup(name="Income", show=True)
-        folium.GeoJson(df, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple'])
-                       ).add_to(fg)
-        fg.add_to(m)
-    elif cat == 'race':
-        race_projected = race.to_crs(epsg=3857)
-        centroid = race_projected.geometry.centroid.to_crs(epsg=4326)
+    elif cat == 'black':
+        black_projected = black.to_crs(epsg=3857)
+        centroid = gender_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
         fg = folium.FeatureGroup(name="Income", show=True)
@@ -173,9 +210,32 @@ def buildmap(cat):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-    elif cat == 'gender':
-        gender_projected = hispanic.to_crs(epsg=3857)
-        centroid = gender_projected.geometry.centroid.to_crs(epsg=4326)
+    elif cat == 'female':
+        female_projected = female.to_crs(epsg=3857)
+        centroid = female_projected.geometry.centroid.to_crs(epsg=4326)
+        m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
+        folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
+        fg = folium.FeatureGroup(name="Income", show=True)
+        high = int(df['Income'].max())
+        low = int(df['Income'].min())
+        colormap = cm.LinearColormap(colors=['white', 'red'], index=[low, high], vmin=low, vmax=high)
+        style_function = lambda x: {
+            'fillColor': colormap(x['properties']["Income"]),
+            'color': 'black',
+            'weight': 1,
+            'fillOpacity': 0.45,
+            'opacity': 0.4,
+            'nan_fill_color': 'purple'
+        }
+        folium.GeoJson(female, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
+                       ).add_to(fg)
+        fg.add_to(m)
+        colormap.caption = "Income"
+        colormap.add_to(m)
+        folium.LayerControl(collapsed=False).add_to(m)
+    elif cat == 'hispanic':
+        hispanic_projected = hispanic.to_crs(epsg=3857)
+        centroid = hispanic_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
         fg = folium.FeatureGroup(name="Income", show=True)
@@ -196,63 +256,8 @@ def buildmap(cat):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-    elif cat == 'age':
-        asian_projected = age.to_crs(epsg=3857)
-        centroid = age_projected.geometry.centroid.to_crs(epsg=4326)
-        m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
-        folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
-        fg = folium.FeatureGroup(name="Income", show=True)
-        high = int(df['Income'].max())
-        low = int(df['Income'].min())
-        colormap = cm.LinearColormap(colors=['white', 'red'], index=[low, high], vmin=low, vmax=high)
-        style_function = lambda x: {
-            'fillColor': colormap(x['properties']["Income"]),
-            'color': 'black',
-            'weight': 1,
-            'fillOpacity': 0.45,
-            'opacity': 0.4,
-            'nan_fill_color': 'purple'
-        }
-        folium.GeoJson(asian, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
-                       ).add_to(fg)
-        fg.add_to(m)
-        colormap.caption = "Income"
-        colormap.add_to(m)
-        folium.LayerControl(collapsed=False).add_to(m)
-    elif cat == "none":
-        df_projected = df.to_crs(epsg=3857)
-        centroid = df_projected.geometry.centroid.to_crs(epsg=4326)
-        m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
-        folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
-        fg = folium.FeatureGroup(name="Income", show=True)
-        folium.GeoJson(df, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple'])
-                       ).add_to(fg)
-        fg.add_to(m)
-    elif cat == 'race':
-        race_projected = race.to_crs(epsg=3857)
-        centroid = race_projected.geometry.centroid.to_crs(epsg=4326)
-        m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
-        folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
-        fg = folium.FeatureGroup(name="Income", show=True)
-        high = int(df['Income'].max())
-        low = int(df['Income'].min())
-        colormap = cm.LinearColormap(colors=['white', 'red'], index=[low, high], vmin=low, vmax=high)
-        style_function = lambda x: {
-            'fillColor': colormap(x['properties']["Income"]),
-            'color': 'black',
-            'weight': 1,
-            'fillOpacity': 0.45,
-            'opacity': 0.4,
-            'nan_fill_color': 'purple'
-        }
-        folium.GeoJson(black, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
-                       ).add_to(fg)
-        fg.add_to(m)
-        colormap.caption = "Income"
-        colormap.add_to(m)
-        folium.LayerControl(collapsed=False).add_to(m)
-    elif cat == 'gender':
-        gender_projected = hispanic.to_crs(epsg=3857)
+    elif cat == 'male':
+        male_projected = male.to_crs(epsg=3857)
         centroid = gender_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
@@ -268,15 +273,15 @@ def buildmap(cat):
             'opacity': 0.4,
             'nan_fill_color': 'purple'
         }
-        folium.GeoJson(hispanic, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
+        folium.GeoJson(male, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
                        ).add_to(fg)
         fg.add_to(m)
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-    elif cat == 'age':
-        asian_projected = age.to_crs(epsg=3857)
-        centroid = age_projected.geometry.centroid.to_crs(epsg=4326)
+    elif cat == 'multi':
+        multi_projected = multi.to_crs(epsg=3857)
+        centroid = multi_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
         fg = folium.FeatureGroup(name="Income", show=True)
@@ -291,24 +296,15 @@ def buildmap(cat):
             'opacity': 0.4,
             'nan_fill_color': 'purple'
         }
-        folium.GeoJson(asian, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
+        folium.GeoJson(multi, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
                        ).add_to(fg)
         fg.add_to(m)
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-    elif cat == "none":
-        df_projected = df.to_crs(epsg=3857)
-        centroid = df_projected.geometry.centroid.to_crs(epsg=4326)
-        m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
-        folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
-        fg = folium.FeatureGroup(name="Income", show=True)
-        folium.GeoJson(df, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple'])
-                       ).add_to(fg)
-        fg.add_to(m)
-    elif cat == 'race':
-        race_projected = race.to_crs(epsg=3857)
-        centroid = race_projected.geometry.centroid.to_crs(epsg=4326)
+    elif cat == 'native':
+        native_projected = native.to_crs(epsg=3857)
+        centroid = native_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
         fg = folium.FeatureGroup(name="Income", show=True)
@@ -323,15 +319,15 @@ def buildmap(cat):
             'opacity': 0.4,
             'nan_fill_color': 'purple'
         }
-        folium.GeoJson(black, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
+        folium.GeoJson(native, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
                        ).add_to(fg)
         fg.add_to(m)
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
-    elif cat == 'gender':
-        gender_projected = hispanic.to_crs(epsg=3857)
-        centroid = gender_projected.geometry.centroid.to_crs(epsg=4326)
+    elif cat == 'white':
+        white_projected = white.to_crs(epsg=3857)
+        centroid = white_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
         fg = folium.FeatureGroup(name="Income", show=True)
@@ -346,30 +342,7 @@ def buildmap(cat):
             'opacity': 0.4,
             'nan_fill_color': 'purple'
         }
-        folium.GeoJson(hispanic, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
-                       ).add_to(fg)
-        fg.add_to(m)
-        colormap.caption = "Income"
-        colormap.add_to(m)
-        folium.LayerControl(collapsed=False).add_to(m)
-    elif cat == 'age':
-        asian_projected = age.to_crs(epsg=3857)
-        centroid = age_projected.geometry.centroid.to_crs(epsg=4326)
-        m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
-        folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
-        fg = folium.FeatureGroup(name="Income", show=True)
-        high = int(df['Income'].max())
-        low = int(df['Income'].min())
-        colormap = cm.LinearColormap(colors=['white', 'red'], index=[low, high], vmin=low, vmax=high)
-        style_function = lambda x: {
-            'fillColor': colormap(x['properties']["Income"]),
-            'color': 'black',
-            'weight': 1,
-            'fillOpacity': 0.45,
-            'opacity': 0.4,
-            'nan_fill_color': 'purple'
-        }
-        folium.GeoJson(asian, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
+        folium.GeoJson(white, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
                        ).add_to(fg)
         fg.add_to(m)
         colormap.caption = "Income"
