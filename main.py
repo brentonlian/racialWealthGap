@@ -96,7 +96,7 @@ def buildmap(cat):
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
     elif cat == 'twentyfive':
-        twentyfive_projected = race.to_crs(epsg=3857)
+        twentyfive_projected = twentyfive.to_crs(epsg=3857)
         centroid = twentyfive_projected.geometry.centroid.to_crs(epsg=4326)
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
@@ -359,23 +359,23 @@ def buildmap(cat):
 buildmap("none")
 # Function to be called when the button is clicked
 def on_button_click():
-    selected_race = race_var.get()
-    buildmap(selected_race)
+    selected_demo = demo.get()
+    buildmap(selected_demo)
 
 # Create the main window
 root = tk.Tk()
 root.title("Income Map Generator")
 
 # Create a label
-label = tk.Label(root, text="Select race:")
+label = tk.Label(root, text="Select demography:")
 label.pack(pady=10)
 
 # Create a dropdown menu
-race_var = tk.StringVar()
-race_options = ["none", "black", "hispanic", "asian", "american_indian", "multiple"]
-race_menu = ttk.Combobox(root, textvariable=race_var, values=race_options)
-race_menu.current(0)
-race_menu.pack(pady=10)
+dem_var = tk.StringVar()
+dem_options = ["none", "15-24", "25-44", "45-64", "65+", "asian", "black", "female", "hispanic", "male", "multi", "native", "white"]
+dem_menu = ttk.Combobox(root, textvariable=dem_var, values=dem_options)
+dem_menu.current(0)
+dem_menu.pack(pady=10)
 
 # Create a button to generate the map
 button = tk.Button(root, text="Generate Map", command=on_button_click)
