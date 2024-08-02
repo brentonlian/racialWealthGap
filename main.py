@@ -355,11 +355,12 @@ def buildmap(cat):
     webbrowser.open('file://' + os.path.realpath(map_file))
 
 
-# BUild blank map
+# Build blank map
 buildmap("none")
 # Function to be called when the button is clicked
 def on_button_click():
-    selected_demo = demo.get()
+    m = folium.Map(location=[45.5236, -122.6750], zoom_start=13)
+    selected_demo = dem_var
     buildmap(selected_demo)
 
 # Create the main window
