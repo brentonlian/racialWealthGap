@@ -60,6 +60,8 @@ multi = multi.astype({"Income": int})
 native = native.astype({"Income": int})
 white = white.astype({"Income": int})
 
+print(fifteen.head())
+
 
 # Function to build the map
 def buildmap(cat):
