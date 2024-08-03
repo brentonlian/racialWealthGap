@@ -74,65 +74,40 @@ def buildmap(cat):
         folium.GeoJson(df, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple'])
                        ).add_to(fg)
         fg.add_to(m)
+        map_file = 'income_map.html'
+        m.save(map_file)
+        webbrowser.open('file://' + os.path.realpath(map_file))
     elif cat == 'fifteen':
-        fifteen_projected = fifteen.to_crs(epsg=3857)
-        centroid = fifteen_projected.geometry.centroid.to_crs(epsg=4326)
-        # Test code
-        try:
-        # Attempt to load 'fifteen' GeoDataFrame
-            print("Attempting to load 'fifteen' GeoDataFrame...")
-            print(fifteen)
-            print("CRS:", fifteen.crs)  # Check the current coordinate reference system
-            print(fifteen.head())  # Check the first few rows
-
-        # Check if geometries are present and valid
-            print("Checking geometries...")
-            if fifteen.geometry.is_empty.any():
-                print("Warning: Some geometries are empty.")
-            if fifteen.geometry.isna().any():
-                print("Warning: Some geometries are not defined (NaN).")
-
-        # Attempt to reproject the GeoDataFrame
-            print("Reprojecting GeoDataFrame...")
-            fifteen_projected = fifteen.to_crs(epsg=3857)
-            print("Reprojection successful")
-            print(fifteen_projected.head())  # Check the first few rows of the reprojected GeoDataFrame
-
-        # Calculate centroid and create map
-            print("Calculating centroid...")
-            centroid = fifteen_projected.geometry.centroid.to_crs(epsg=4326)
-            print("Creating map...")
-            m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
-
-        # Save map
-            print("Saving map...")
-            m.save(map_file)
-            print(f"Map saved to {map_file}")
-
-        except Exception as e:
-            print(f"Error in buildmap function: {e}")
-        # End of testing code
-
-        m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
+        m = folium.Map(location=[black.geometry.centroid.y.mean(), black.geometry.centroid.x.mean()], zoom_start=5)
+        #changed tiles none
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
         fg = folium.FeatureGroup(name="Income", show=True)
-        high = int(df['Income'].max())
-        low = int(df['Income'].min())
-        colormap = cm.LinearColormap(colors=['white', 'red'], index=[low, high], vmin=low, vmax=high)
-        style_function = lambda x: {
-            'fillColor': colormap(x['properties']["Income"]),
-            'color': 'black',
-            'weight': 1,
-            'fillOpacity': 0.45,
-            'opacity': 0.4,
-            'nan_fill_color': 'purple'
+        high=int(df['Income'].max())
+        low=int(df['Income'].min())
+        colormap = cm.LinearColormap(colors=['white','red'],index=[low,high],vmin=low,vmax=high)
+        colormap
+        #skipped totals
+        style_function=lambda x: {
+        'fillColor': colormap(x['properties']["Income"]),
+        'color': 'black',
+        'weight': 1,
+        'fillOpacity': 0.45,
+        'weight': 1,
+        'opacity':0.4,
+        'nan_fill_color': 'purple'
         }
-        folium.GeoJson(fifteen, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State', 'White', 'Black', 'Hispanic', 'Asian', 'American Indian', 'Native Haiwaiian', 'Multiple', 'Minority', 'Location', 'Wealth'])
-                       ).add_to(fg)
+        folium.GeoJson(black,style_function=style_function,tooltip=folium.GeoJsonTooltip(fields=['Income','State','White','Black','Hispanic','Asian','American Indian','Native Haiwaiian','Multiple','Minority','Location','Wealth'])
+        ).add_to(fg)
         fg.add_to(m)
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
+        colormap.caption = "Income"
+        colormap.add_to(m)
+        folium.LayerControl(collapsed=False).add_to(m)
+        map_file = 'income_map.html'
+        m.save(map_file)
+        webbrowser.open('file://' + os.path.realpath(map_file))
     elif cat == 'twentyfive':
         twentyfive_projected = twentyfive.to_crs(epsg=3857)
         centroid = twentyfive_projected.geometry.centroid.to_crs(epsg=4326)
@@ -156,6 +131,9 @@ def buildmap(cat):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
+        map_file = 'income_map.html'
+        m.save(map_file)
+        webbrowser.open('file://' + os.path.realpath(map_file))
     elif cat == 'fourtyfive':
         fourtyfive_projected = fourtyfive.to_crs(epsg=3857)
         centroid = fourtyfive_projected.geometry.centroid.to_crs(epsg=4326)
@@ -179,6 +157,9 @@ def buildmap(cat):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
+        map_file = 'income_map.html'
+        m.save(map_file)
+        webbrowser.open('file://' + os.path.realpath(map_file))
     elif cat == 'sixtyfive':
         sixtyfive_projected = sixtyfive.to_crs(epsg=3857)
         centroid = sixtyfive_projected.geometry.centroid.to_crs(epsg=4326)
@@ -202,6 +183,9 @@ def buildmap(cat):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
+        map_file = 'income_map.html'
+        m.save(map_file)
+        webbrowser.open('file://' + os.path.realpath(map_file))
     elif cat == 'asian':
         asian_projected = asian.to_crs(epsg=3857)
         centroid = asian_projected.geometry.centroid.to_crs(epsg=4326)
@@ -225,6 +209,9 @@ def buildmap(cat):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
+        map_file = 'income_map.html'
+        m.save(map_file)
+        webbrowser.open('file://' + os.path.realpath(map_file))
     elif cat == 'black':
         black_projected = black.to_crs(epsg=3857)
         centroid = gender_projected.geometry.centroid.to_crs(epsg=4326)
@@ -248,6 +235,9 @@ def buildmap(cat):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
+        map_file = 'income_map.html'
+        m.save(map_file)
+        webbrowser.open('file://' + os.path.realpath(map_file))
     elif cat == 'female':
         female_projected = female.to_crs(epsg=3857)
         centroid = female_projected.geometry.centroid.to_crs(epsg=4326)
@@ -271,6 +261,9 @@ def buildmap(cat):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
+        map_file = 'income_map.html'
+        m.save(map_file)
+        webbrowser.open('file://' + os.path.realpath(map_file))
     elif cat == 'hispanic':
         hispanic_projected = hispanic.to_crs(epsg=3857)
         centroid = hispanic_projected.geometry.centroid.to_crs(epsg=4326)
@@ -294,6 +287,9 @@ def buildmap(cat):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
+        map_file = 'income_map.html'
+        m.save(map_file)
+        webbrowser.open('file://' + os.path.realpath(map_file))
     elif cat == 'male':
         male_projected = male.to_crs(epsg=3857)
         centroid = gender_projected.geometry.centroid.to_crs(epsg=4326)
@@ -317,6 +313,9 @@ def buildmap(cat):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
+        map_file = 'income_map.html'
+        m.save(map_file)
+        webbrowser.open('file://' + os.path.realpath(map_file))
     elif cat == 'multi':
         multi_projected = multi.to_crs(epsg=3857)
         centroid = multi_projected.geometry.centroid.to_crs(epsg=4326)
@@ -340,6 +339,9 @@ def buildmap(cat):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
+        map_file = 'income_map.html'
+        m.save(map_file)
+        webbrowser.open('file://' + os.path.realpath(map_file))
     elif cat == 'native':
         native_projected = native.to_crs(epsg=3857)
         centroid = native_projected.geometry.centroid.to_crs(epsg=4326)
@@ -363,6 +365,9 @@ def buildmap(cat):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
+        map_file = 'income_map.html'
+        m.save(map_file)
+        webbrowser.open('file://' + os.path.realpath(map_file))
     elif cat == 'white':
         white_projected = white.to_crs(epsg=3857)
         centroid = white_projected.geometry.centroid.to_crs(epsg=4326)
@@ -386,18 +391,16 @@ def buildmap(cat):
         colormap.caption = "Income"
         colormap.add_to(m)
         folium.LayerControl(collapsed=False).add_to(m)
+        map_file = 'income_map.html'
+        m.save(map_file)
+        webbrowser.open('file://' + os.path.realpath(map_file))
 
     # Save the map to an HTML file and open it in a web browser
-    map_file = 'income_map.html'
-    m.save(map_file)
-    webbrowser.open('file://' + os.path.realpath(map_file))
-
 
 # Build blank map
 buildmap("none")
 # Function to be called when the button is clicked
 def on_button_click():
-    m = folium.Map(location=[45.5236, -122.6750], zoom_start=13)
     selected_demo = dem_var
     buildmap(selected_demo)
 
