@@ -75,6 +75,42 @@ def buildmap(cat):
     elif cat == 'fifteen':
         fifteen_projected = fifteen.to_crs(epsg=3857)
         centroid = fifteen_projected.geometry.centroid.to_crs(epsg=4326)
+        # Test code
+        try:
+        # Attempt to load 'fifteen' GeoDataFrame
+            print("Attempting to load 'fifteen' GeoDataFrame...")
+            print(fifteen)
+            print("CRS:", fifteen.crs)  # Check the current coordinate reference system
+            print(fifteen.head())  # Check the first few rows
+
+        # Check if geometries are present and valid
+            print("Checking geometries...")
+            if fifteen.geometry.is_empty.any():
+                print("Warning: Some geometries are empty.")
+            if fifteen.geometry.isna().any():
+                print("Warning: Some geometries are not defined (NaN).")
+
+        # Attempt to reproject the GeoDataFrame
+            print("Reprojecting GeoDataFrame...")
+            fifteen_projected = fifteen.to_crs(epsg=3857)
+            print("Reprojection successful")
+            print(fifteen_projected.head())  # Check the first few rows of the reprojected GeoDataFrame
+
+        # Calculate centroid and create map
+            print("Calculating centroid...")
+            centroid = fifteen_projected.geometry.centroid.to_crs(epsg=4326)
+            print("Creating map...")
+            m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
+
+        # Save map
+            print("Saving map...")
+            m.save(map_file)
+            print(f"Map saved to {map_file}")
+
+        except Exception as e:
+            print(f"Error in buildmap function: {e}")
+        # End of testing code
+
         m = folium.Map(location=[centroid.y.mean(), centroid.x.mean()], zoom_start=5)
         folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
         fg = folium.FeatureGroup(name="Income", show=True)
