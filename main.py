@@ -4,6 +4,8 @@ import folium
 import branca.colormap as cm
 import webbrowser
 import tempfile
+import tkinter as tk
+from tkinter import ttk
 
 # Load data
 d = pd.read_csv('allStats.csv', on_bad_lines='skip')
@@ -17,7 +19,6 @@ multipl = pd.read_csv('multi.csv')
 
 state = gpd.read_file("https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_040_00_500k.json")
 
-
 # Merge dataframes
 df = state.merge(d, left_on='NAME', right_on='State')
 black = state.merge(blac, left_on='NAME', right_on='State')
@@ -26,81 +27,53 @@ asian = state.merge(asia, left_on='NAME', right_on='State')
 american_indian = state.merge(american_india, left_on='NAME', right_on='State')
 multiple = state.merge(multipl, left_on='NAME', right_on='State')
 
-# Ensure geometries are in the same coordinate system
-state = state.to_crs(epsg=3857)
-df = df.to_crs(epsg=3857)
-black = black.to_crs(epsg=3857)
-hispanic = hispanic.to_crs(epsg=3857)
-asian = asian.to_crs(epsg=3857)
-american_indian = american_indian.to_crs(epsg=3857)
-multiple = multiple.to_crs(epsg=3857)
-
-# Validate geometries
-df = df[df.is_valid]
-black = black[black.is_valid]
-hispanic = hispanic[hispanic.is_valid]
-asian = asian[asian.is_valid]
-american_indian = american_indian[american_indian.is_valid]
-multiple = multiple[multiple.is_valid]
+# Set types to integer
+df = df.astype({"Income": int})
+black = black.astype({"Income": int})
+hispanic = hispanic.astype({"Income": int})
+asian = asian.astype({"Income": int})
+american_indian = american_indian.astype({"Income": int})
+multiple = multiple.astype({"Income": int})
 
 # Define a function to build the map
-def buildmap(race):
+def buildmap(demography):
     # Determine the appropriate dataframe
-    if race == "none":
+    if demography == "none":
         selected_df = df
-    elif race == "black":
+    elif demography == "black":
         selected_df = black
-    elif race == "hispanic":
+    elif demography == "hispanic":
         selected_df = hispanic
-    elif race == "asian":
+    elif demography == "asian":
         selected_df = asian
-    elif race == "american_indian":
+    elif demography == "american_indian":
         selected_df = american_indian
-    elif race == "multiple":
+    elif demography == "multiple":
         selected_df = multiple
     else:
-        print(f"Invalid race category: {race}")
-        return
-
-    # Debug: Print sample data
-    print("Sample Data:")
-    print(selected_df[['State', 'Income']].head())
-
-    # Drop rows with missing income data
-    selected_df = selected_df.dropna(subset=['Income'])
-    selected_df = selected_df[selected_df['Income'] > 0]  # Filter out zero incomes
-
-    # Debug: Check for non-zero income values
-    if selected_df.empty:
-        print("No data available with non-zero Income for the selected category.")
-        return
-
-    # Debug: Check geometries
-    if selected_df.empty or selected_df.geometry.is_empty.any():
-        print("Warning: Some geometries are missing or empty.")
+        print(f"Invalid category: {demography}")
         return
 
     # Create the map
     m = folium.Map(location=[selected_df.geometry.centroid.y.mean(), selected_df.geometry.centroid.x.mean()], zoom_start=5)
     folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
-    fg = folium.FeatureGroup(name="Income", show= True)
+    fg = folium.FeatureGroup(name="Income", show=True)
+
     # Determine color scale
     high = selected_df['Income'].max()
     low = selected_df['Income'].min()
-    colormap = cm.LinearColormap(colors=['white', 'red'], index=[low,high], vmin=low, vmax=high)
+    colormap = cm.LinearColormap(colors=['white', 'red'], index=[low, high], vmin=low, vmax=high)
     colormap
+
     # Define style function
-    def style_function(x):
-        # Debug: Print the properties being passed to style function
-        income_value = x['properties']["Income"]
-        print(f"Styling {x['properties']['State']} with Income: {income_value}")
-        return {
-            'fillColor': colormap(income_value) if pd.notnull(income_value) else 'purple',
-            'color': 'black',
-            'weight': 1,
-            'fillOpacity': 0.7 if pd.notnull(income_value) else 0,  # Ensure fillOpacity is used
-            'opacity': 0.4
-        }
+    style_function = lambda x: {
+        'fillColor': colormap(x['properties']["Income"]),
+        'color': 'black',
+        'weight': 1,
+        'fillOpacity': 0.45,
+        'opacity': 0.4,
+        'nan_fill_color': 'purple'
+    }
 
     # Add GeoJson layer
     folium.GeoJson(selected_df, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State'])
@@ -112,26 +85,31 @@ def buildmap(race):
     colormap.add_to(m)
     folium.LayerControl(collapsed=False).add_to(m)
 
-    #Save and open map
+    # Save and open map
     m.save('map.html')
     webbrowser.open('map.html')
 
-# Get user input
-race = input('Enter none, black, hispanic, asian, american_indian, or multiple: ')
+# Define a function for the GUI
+def on_generate_map():
+    demography = demographic_selection.get()
+    buildmap(demography)
 
-# Build the map based on user input
-buildmap(race)
+# Create the GUI
+root = tk.Tk()
+root.title("Demographic Map Generator")
 
-#testing geometries
-import geopandas as gpd
-import matplotlib.pyplot as plt
+# Label
+label = ttk.Label(root, text="Select Demographic Category:")
+label.pack(pady=10)
 
-# Export DataFrame to CSV
-df.to_csv('df_full.csv', index=False)
-black.to_csv('black_full.csv', index=False)
-hispanic.to_csv('hispanic_full.csv', index=False)
-asian.to_csv('asian_full.csv', index=False)
-american_indian.to_csv('american_indian_full.csv', index=False)
-multiple.to_csv('multiple_full.csv', index=False)
+# Dropdown menu
+demographic_selection = ttk.Combobox(root, values=["none", "black", "hispanic", "asian", "american_indian", "multiple"])
+demographic_selection.current(0)
+demographic_selection.pack(pady=10)
 
+# Button
+generate_button = ttk.Button(root, text="Generate Map", command=on_generate_map)
+generate_button.pack(pady=20)
 
+# Run the GUI
+root.mainloop()
