@@ -42,6 +42,14 @@ asian = asian.to_crs(epsg=3857)
 american_indian = american_indian.to_crs(epsg=3857)
 multiple = multiple.to_crs(epsg=3857)
 
+# Validate geometries
+df = df[df.is_valid]
+black = black[black.is_valid]
+hispanic = hispanic[hispanic.is_valid]
+asian = asian[asian.is_valid]
+american_indian = american_indian[american_indian.is_valid]
+multiple = multiple[multiple.is_valid]
+
 # Define a function to build the map
 def buildmap(race):
     # Determine the appropriate dataframe
@@ -61,6 +69,24 @@ def buildmap(race):
         print(f"Invalid race category: {race}")
         return
 
+    # Debug: Print sample data
+    print("Sample Data:")
+    print(selected_df[['State', 'Income']].head())
+
+    # Drop rows with missing income data
+    selected_df = selected_df.dropna(subset=['Income'])
+    selected_df = selected_df[selected_df['Income'] > 0]  # Filter out zero incomes
+
+    # Debug: Check for non-zero income values
+    if selected_df.empty:
+        print("No data available with non-zero Income for the selected category.")
+        return
+
+    # Debug: Check geometries
+    if selected_df.empty or selected_df.geometry.is_empty.any():
+        print("Warning: Some geometries are missing or empty.")
+        return
+
     # Create the map
     m = folium.Map(location=[selected_df.geometry.centroid.y.mean(), selected_df.geometry.centroid.x.mean()], zoom_start=5)
     folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
@@ -68,17 +94,24 @@ def buildmap(race):
     # Determine color scale
     high = selected_df['Income'].max()
     low = selected_df['Income'].min()
+
+    # Debug: Print min and max income
+    print(f"Min Income: {low}, Max Income: {high}")
+
     colormap = cm.LinearColormap(colors=['white', 'red'], vmin=low, vmax=high)
 
     # Define style function
-    style_function = lambda x: {
-        'fillColor': colormap(x['properties']["Income"]),
-        'color': 'black',
-        'weight': 1,
-        'fillOpacity': 0.45,
-        'opacity': 0.4,
-        'nan_fill_color': 'purple'
-    }
+    def style_function(x):
+        # Debug: Print the properties being passed to style function
+        income_value = x['properties']["Income"]
+        print(f"Styling {x['properties']['State']} with Income: {income_value}")
+        return {
+            'fillColor': colormap(income_value) if pd.notnull(income_value) else 'purple',
+            'color': 'black',
+            'weight': 1,
+            'fillOpacity': 0.7 if pd.notnull(income_value) else 0,  # Ensure fillOpacity is used
+            'opacity': 0.4
+        }
 
     # Add GeoJson layer
     folium.GeoJson(selected_df, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State'])
@@ -98,3 +131,17 @@ race = input('Enter none, black, hispanic, asian, american_indian, or multiple: 
 
 # Build the map based on user input
 buildmap(race)
+
+#testing geometries
+import geopandas as gpd
+import matplotlib.pyplot as plt
+
+# Export DataFrame to CSV
+df.to_csv('df_full.csv', index=False)
+black.to_csv('black_full.csv', index=False)
+hispanic.to_csv('hispanic_full.csv', index=False)
+asian.to_csv('asian_full.csv', index=False)
+american_indian.to_csv('american_indian_full.csv', index=False)
+multiple.to_csv('multiple_full.csv', index=False)
+
+
