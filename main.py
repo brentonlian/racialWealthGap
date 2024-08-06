@@ -17,13 +17,6 @@ multipl = pd.read_csv('multi.csv')
 
 state = gpd.read_file("https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_040_00_500k.json")
 
-# Convert "Income" to numeric and handle non-numeric entries
-d["Income"] = pd.to_numeric(d["Income"], errors="coerce")
-blac["Income"] = pd.to_numeric(blac["Income"], errors="coerce")
-hispani["Income"] = pd.to_numeric(hispani["Income"], errors="coerce")
-asia["Income"] = pd.to_numeric(asia["Income"], errors="coerce")
-american_india["Income"] = pd.to_numeric(american_india["Income"], errors="coerce")
-multipl["Income"] = pd.to_numeric(multipl["Income"], errors="coerce")
 
 # Merge dataframes
 df = state.merge(d, left_on='NAME', right_on='State')
@@ -64,12 +57,12 @@ def buildmap(race):
     # Create the map
     m = folium.Map(location=[selected_df.geometry.centroid.y.mean(), selected_df.geometry.centroid.x.mean()], zoom_start=5)
     folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
-
+    fg = folium.FeatureGroup(name="Income", show= True)
     # Determine color scale
     high = selected_df['Income'].max()
     low = selected_df['Income'].min()
-    colormap = cm.LinearColormap(colors=['white', 'red'], vmin=low, vmax=high)
-
+    colormap = cm.LinearColormap(colors=['white', 'red'], index=[low,high], vmin=low, vmax=high)
+    colormap
     # Define style function
     style_function = lambda x: {
         'fillColor': colormap(x['properties']["Income"]),
@@ -82,16 +75,17 @@ def buildmap(race):
 
     # Add GeoJson layer
     folium.GeoJson(selected_df, style_function=style_function, tooltip=folium.GeoJsonTooltip(fields=['Income', 'State'])
-                  ).add_to(m)
+                  ).add_to(fg)
+    fg.add_to(m)
 
     # Add colormap
     colormap.caption = "Income"
     colormap.add_to(m)
+    folium.LayerControl(collapsed=False).add_to(m)
 
-    # Save the map to a temporary HTML file and open it
-    with tempfile.NamedTemporaryFile(suffix='.html', delete=False) as f:
-        m.save(f.name)
-        webbrowser.open(f.name)
+    #Save and open map
+    m.save('map.html')
+    webbrowser.open('map.html')
 
 # Get user input
 race = input('Enter none, black, hispanic, asian, american_indian, or multiple: ')
