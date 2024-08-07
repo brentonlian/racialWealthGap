@@ -56,17 +56,17 @@ male = male.astype({"Income": int})
 
 # Dictionary mapping user input to dataframes
 demographics = {
-    "black": black,
-    "hispanic": hispanic,
-    "asian": asian,
-    "american_indian": american_indian,
-    "multiple": multiple,
     "15-24": age_15_24,
     "25-44": age_25_44,
     "45-64": age_45_64,
     "65+": age_65,
     "female": female,
-    "male": male
+    "male": male,
+    "black": black,
+    "hispanic": hispanic,
+    "asian": asian,
+    "american_indian": american_indian,
+    "multiple": multiple,
 }
 
 # Define a function to build the map
@@ -116,26 +116,43 @@ def buildmap(demography):
     webbrowser.open('map.html')
 
 # Define the GUI
+def on_main_category_change(event):
+    main_category = combo_main_category.get()
+    if main_category == "Age":
+        subcategory_options = ["15-24", "25-44", "45-64", "65+"]
+    elif main_category == "Gender":
+        subcategory_options = ["female", "male"]
+    elif main_category == "Race":
+        subcategory_options = ["black", "hispanic", "asian", "american_indian", "multiple"]
+    else:
+        subcategory_options = []
+
+    combo_subcategory['values'] = subcategory_options
+    combo_subcategory.current(0)
+
 def on_submit():
-    selected_demography = combo_demography.get()
+    selected_demography = combo_subcategory.get()
     buildmap(selected_demography)
 
 root = tk.Tk()
 root.title("Demographic Map Builder")
 
-# Label
-label = ttk.Label(root, text="Select Demographic:")
-label.grid(column=0, row=0, padx=10, pady=10)
+# Main category dropdown
+label_main = ttk.Label(root, text="Select Main Category:")
+label_main.grid(column=0, row=0, padx=10, pady=10)
+combo_main_category = ttk.Combobox(root, values=["Age", "Gender", "Race"])
+combo_main_category.grid(column=1, row=0, padx=10, pady=10)
+combo_main_category.bind("<<ComboboxSelected>>", on_main_category_change)
 
-# Dropdown for demographic selection
-demography_options = ["none"] + list(demographics.keys())
-combo_demography = ttk.Combobox(root, values=demography_options)
-combo_demography.grid(column=1, row=0, padx=10, pady=10)
-combo_demography.current(0)
+# Subcategory dropdown
+label_sub = ttk.Label(root, text="Select Subcategory:")
+label_sub.grid(column=0, row=1, padx=10, pady=10)
+combo_subcategory = ttk.Combobox(root)
+combo_subcategory.grid(column=1, row=1, padx=10, pady=10)
 
 # Submit button
 submit_button = ttk.Button(root, text="Generate Map", command=on_submit)
-submit_button.grid(column=0, row=1, columnspan=2, pady=10)
+submit_button.grid(column=0, row=2, columnspan=2, pady=10)
 
 # Run the GUI loop
 root.mainloop()
