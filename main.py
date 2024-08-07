@@ -3,7 +3,6 @@ import geopandas as gpd
 import folium
 import branca.colormap as cm
 import webbrowser
-import tempfile
 import tkinter as tk
 from tkinter import ttk
 
@@ -11,12 +10,20 @@ from tkinter import ttk
 d = pd.read_csv('allStats.csv', on_bad_lines='skip')
 d = d.replace("%", "", regex=True).replace(",", "", regex=True).fillna("0")
 
+# Load demographic data
 blac = pd.read_csv('black.csv')
 hispani = pd.read_csv('hispanic.csv')
 asia = pd.read_csv('asian.csv')
 american_india = pd.read_csv('native.csv')
 multipl = pd.read_csv('multi.csv')
+age_15_24 = pd.read_csv('15-24.csv')
+age_25_44 = pd.read_csv('25-44.csv')
+age_45_64 = pd.read_csv('45-64.csv')
+age_65 = pd.read_csv('65+.csv')
+female = pd.read_csv('female.csv')
+male = pd.read_csv('male.csv')
 
+# Load state data
 state = gpd.read_file("https://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_040_00_500k.json")
 
 # Merge dataframes
@@ -26,6 +33,12 @@ hispanic = state.merge(hispani, left_on='NAME', right_on='State')
 asian = state.merge(asia, left_on='NAME', right_on='State')
 american_indian = state.merge(american_india, left_on='NAME', right_on='State')
 multiple = state.merge(multipl, left_on='NAME', right_on='State')
+age_15_24 = state.merge(age_15_24, left_on='NAME', right_on='State')
+age_25_44 = state.merge(age_25_44, left_on='NAME', right_on='State')
+age_45_64 = state.merge(age_45_64, left_on='NAME', right_on='State')
+age_65 = state.merge(age_65, left_on='NAME', right_on='State')
+female = state.merge(female, left_on='NAME', right_on='State')
+male = state.merge(male, left_on='NAME', right_on='State')
 
 # Set types to integer
 df = df.astype({"Income": int})
@@ -34,22 +47,35 @@ hispanic = hispanic.astype({"Income": int})
 asian = asian.astype({"Income": int})
 american_indian = american_indian.astype({"Income": int})
 multiple = multiple.astype({"Income": int})
+age_15_24 = age_15_24.astype({"Income": int})
+age_25_44 = age_25_44.astype({"Income": int})
+age_45_64 = age_45_64.astype({"Income": int})
+age_65 = age_65.astype({"Income": int})
+female = female.astype({"Income": int})
+male = male.astype({"Income": int})
+
+# Dictionary mapping user input to dataframes
+demographics = {
+    "black": black,
+    "hispanic": hispanic,
+    "asian": asian,
+    "american_indian": american_indian,
+    "multiple": multiple,
+    "15-24": age_15_24,
+    "25-44": age_25_44,
+    "45-64": age_45_64,
+    "65+": age_65,
+    "female": female,
+    "male": male
+}
 
 # Define a function to build the map
 def buildmap(demography):
     # Determine the appropriate dataframe
     if demography == "none":
         selected_df = df
-    elif demography == "black":
-        selected_df = black
-    elif demography == "hispanic":
-        selected_df = hispanic
-    elif demography == "asian":
-        selected_df = asian
-    elif demography == "american_indian":
-        selected_df = american_indian
-    elif demography == "multiple":
-        selected_df = multiple
+    elif demography in demographics:
+        selected_df = demographics[demography]
     else:
         print(f"Invalid category: {demography}")
         return
@@ -58,13 +84,13 @@ def buildmap(demography):
     m = folium.Map(location=[selected_df.geometry.centroid.y.mean(), selected_df.geometry.centroid.x.mean()], zoom_start=5)
     folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
     fg = folium.FeatureGroup(name="Income", show=True)
-
+    
     # Determine color scale
     high = selected_df['Income'].max()
     low = selected_df['Income'].min()
-    colormap = cm.LinearColormap(colors=['white', 'red'], index=[low, high], vmin=low, vmax=high)
+    colormap = cm.LinearColormap(colors=['white', 'red'], index=[low,high], vmin=low, vmax=high)
     colormap
-
+    
     # Define style function
     style_function = lambda x: {
         'fillColor': colormap(x['properties']["Income"]),
@@ -89,27 +115,27 @@ def buildmap(demography):
     m.save('map.html')
     webbrowser.open('map.html')
 
-# Define a function for the GUI
-def on_generate_map():
-    demography = demographic_selection.get()
-    buildmap(demography)
+# Define the GUI
+def on_submit():
+    selected_demography = combo_demography.get()
+    buildmap(selected_demography)
 
-# Create the GUI
 root = tk.Tk()
-root.title("Demographic Map Generator")
+root.title("Demographic Map Builder")
 
 # Label
-label = ttk.Label(root, text="Select Demographic Category:")
-label.pack(pady=10)
+label = ttk.Label(root, text="Select Demographic:")
+label.grid(column=0, row=0, padx=10, pady=10)
 
-# Dropdown menu
-demographic_selection = ttk.Combobox(root, values=["none", "black", "hispanic", "asian", "american_indian", "multiple"])
-demographic_selection.current(0)
-demographic_selection.pack(pady=10)
+# Dropdown for demographic selection
+demography_options = ["none"] + list(demographics.keys())
+combo_demography = ttk.Combobox(root, values=demography_options)
+combo_demography.grid(column=1, row=0, padx=10, pady=10)
+combo_demography.current(0)
 
-# Button
-generate_button = ttk.Button(root, text="Generate Map", command=on_generate_map)
-generate_button.pack(pady=20)
+# Submit button
+submit_button = ttk.Button(root, text="Generate Map", command=on_submit)
+submit_button.grid(column=0, row=1, columnspan=2, pady=10)
 
-# Run the GUI
+# Run the GUI loop
 root.mainloop()
