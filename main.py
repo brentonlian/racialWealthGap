@@ -14,8 +14,9 @@ d = d.replace("%", "", regex=True).replace(",", "", regex=True).fillna("0")
 blac = pd.read_csv('black.csv')
 hispani = pd.read_csv('hispanic.csv')
 asia = pd.read_csv('asian.csv')
-american_india = pd.read_csv('native.csv')
+american_india = pd.read_csv('american_indian.csv')
 multipl = pd.read_csv('multi.csv')
+whit = pd.read_csv('white.csv')
 age_15_24 = pd.read_csv('15-24.csv')
 age_25_44 = pd.read_csv('25-44.csv')
 age_45_64 = pd.read_csv('45-64.csv')
@@ -39,34 +40,37 @@ age_45_64 = state.merge(age_45_64, left_on='NAME', right_on='State')
 age_65 = state.merge(age_65, left_on='NAME', right_on='State')
 female = state.merge(female, left_on='NAME', right_on='State')
 male = state.merge(male, left_on='NAME', right_on='State')
+white = state.merge(whit, left_on='NAME', right_on='State')
 
 # Set types to integer
 df = df.astype({"Income": int})
-black = black.astype({"Income": int})
-hispanic = hispanic.astype({"Income": int})
-asian = asian.astype({"Income": int})
-american_indian = american_indian.astype({"Income": int})
-multiple = multiple.astype({"Income": int})
-age_15_24 = age_15_24.astype({"Income": int})
-age_25_44 = age_25_44.astype({"Income": int})
-age_45_64 = age_45_64.astype({"Income": int})
-age_65 = age_65.astype({"Income": int})
-female = female.astype({"Income": int})
-male = male.astype({"Income": int})
+Black = black.astype({"Income": int})
+Hispanic = hispanic.astype({"Income": int})
+Asian = asian.astype({"Income": int})
+American_Indian = american_indian.astype({"Income": int})
+Multiple = multiple.astype({"Income": int})
+Age_15_24 = age_15_24.astype({"Income": int})
+Age_25_44 = age_25_44.astype({"Income": int})
+Age_45_64 = age_45_64.astype({"Income": int})
+Age_65 = age_65.astype({"Income": int})
+Female = female.astype({"Income": int})
+Male = male.astype({"Income": int})
+White = white.astype({"Income": int})
 
 # Dictionary mapping user input to dataframes
 demographics = {
-    "15-24": age_15_24,
-    "25-44": age_25_44,
-    "45-64": age_45_64,
-    "65+": age_65,
-    "female": female,
-    "male": male,
-    "black": black,
-    "hispanic": hispanic,
-    "asian": asian,
-    "american_indian": american_indian,
-    "multiple": multiple,
+    "15-24": Age_15_24,
+    "25-44": Age_25_44,
+    "45-64": Age_45_64,
+    "65+": Age_65,
+    "Female": Female,
+    "Male": Male,
+    "Black": Black,
+    "Hispanic": Hispanic,
+    "Asian": Asian,
+    "American_Indian": American_Indian,
+    "Multiple": Multiple,
+    "White": White,
 }
 
 # Define a function to build the map
@@ -80,16 +84,21 @@ def buildmap(demography):
         print(f"Invalid category: {demography}")
         return
 
+    # Find the states with the highest and lowest income
+    highest_income_state = selected_df.loc[selected_df['Income'].idxmax()]['NAME']
+    highest_income_value = selected_df['Income'].max()
+    lowest_income_state = selected_df.loc[selected_df['Income'].idxmin()]['NAME']
+    lowest_income_value = selected_df['Income'].min()
+
     # Create the map
     m = folium.Map(location=[selected_df.geometry.centroid.y.mean(), selected_df.geometry.centroid.x.mean()], zoom_start=5)
     folium.TileLayer(tiles='openstreetmap', show=True, control=False, min_zoom=5).add_to(m)
     fg = folium.FeatureGroup(name="Income", show=True)
     
     # Determine color scale
-    high = selected_df['Income'].max()
-    low = selected_df['Income'].min()
-    colormap = cm.LinearColormap(colors=['white', 'red'], index=[low,high], vmin=low, vmax=high)
-    colormap
+    high = highest_income_value
+    low = lowest_income_value
+    colormap = cm.LinearColormap(colors=['white', 'red'], index=[low, high], vmin=low, vmax=high)
     
     # Define style function
     style_function = lambda x: {
@@ -106,8 +115,8 @@ def buildmap(demography):
                   ).add_to(fg)
     fg.add_to(m)
 
-    # Add colormap
-    colormap.caption = "Income"
+    # Add colormap with additional information
+    colormap.caption = f"Lowest: {lowest_income_state} (${lowest_income_value})\nHighest: {highest_income_state} (${highest_income_value})"
     colormap.add_to(m)
     folium.LayerControl(collapsed=False).add_to(m)
 
@@ -121,9 +130,9 @@ def on_main_category_change(event):
     if main_category == "Age":
         subcategory_options = ["15-24", "25-44", "45-64", "65+"]
     elif main_category == "Gender":
-        subcategory_options = ["female", "male"]
+        subcategory_options = ["Female", "Male"]
     elif main_category == "Race":
-        subcategory_options = ["black", "hispanic", "asian", "american_indian", "multiple"]
+        subcategory_options = ["Black", "Hispanic", "Asian", "American_Indian", "Multiple", "White"]
     else:
         subcategory_options = []
 
