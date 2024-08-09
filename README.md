@@ -4,19 +4,19 @@
 This Python based Demographic Map Builder allows users to view income disparities by state and demographic in the United States.
 
 ## Features
--Interactive map generation with Folium and GeoPandas.
--Tooltips on hover for each state.
--Multiple demographic categories.
--User friendly Tkinter GUI and HTML map.
--Color coded map
+-Interactive map generation with Folium and GeoPandas.\
+-Tooltips on hover for each state.\
+-Multiple demographic categories.\
+-User friendly Tkinter GUI and HTML map.\
+-Color coded map.\
 -Statistics for highest and lowest income and the corresponding state.
 
 ## Requirements
--Python 3
--pandas
--geopandas
--folium
--branca
+-Python 3\
+-pandas\
+-geopandas\
+-folium\
+-branca\
 -tkinter
 
 ## Installaion
