@@ -78,8 +78,10 @@ def buildmap(demography):
     # Determine the appropriate dataframe
     if demography == "none":
         selected_df = df
+        title = "Overall Income"
     elif demography in demographics:
         selected_df = demographics[demography]
+        title = f"Income Distribution for demographic category {demography.capitalize()}"
     else:
         print(f"Invalid category: {demography}")
         return
@@ -116,9 +118,18 @@ def buildmap(demography):
     fg.add_to(m)
 
     # Add colormap with additional information
-    colormap.caption = f"Lowest: {lowest_income_state} (${lowest_income_value})\nHighest: {highest_income_state} (${highest_income_value})"
+    colormap.caption = f"Lowest: {lowest_income_state} | Highest: {highest_income_state}"
     colormap.add_to(m)
     folium.LayerControl(collapsed=False).add_to(m)
+
+    # Add custom title/caption using HTML
+    html_title = f"""
+        <div style="text-align:center;">
+            <h4>{title}</h4>
+        </div>
+    """
+    title_element = folium.Element(html_title)
+    m.get_root().html.add_child(title_element)
 
     # Save and open map
     m.save('map.html')
