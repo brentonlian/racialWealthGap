@@ -20,7 +20,7 @@ This Python based Demographic Map Builder allows users to view income disparitie
 -branca\
 -tkinter
 
-## Installaion
+## Installation
 1. Clone the repository from https://github.com/brentonlian/racialWealthGap
 2. Navigate to the project directory with cd racialWealthGap
 3. Install required packages with pip install -r requirements.txt
