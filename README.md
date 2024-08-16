@@ -1,5 +1,5 @@
-#Demographic Map Builder
-#An example picture is included in examplepic.png
+# Demographic Map Builder
+# An example picture is included in examplepic.png
 
 ## Introduction
 This Python based Demographic Map Builder allows users to view income disparities by state and demographic in the United States.
